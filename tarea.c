@@ -1,16 +1,27 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h> 
 
 typedef struct {
     char nombre[20];
-    char pais[20];
+    char pais[20]; 
     int edad;
     int creadorContenido;
     int numAmigos;
     char** amigos;
     int numIntereses;
     char** intereses;
+    
+    /*
+    char nombre[20];
+    int pais; //supongo que es int porque la profe da una cantidad de países
+    int edad;
+    int* amigos;
+    bool creador; //0 false, 1 true
+    char* intereses;
+    */
+    
 } Usuario;
 
 int main(int argc, char const* argv[]) {
