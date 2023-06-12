@@ -5,29 +5,24 @@
 
 typedef struct {
     char nombre[20];
-    char pais[20]; 
+    char pais[20];
     int edad;
     int creadorContenido;
     int numAmigos;
     char** amigos;
     int numIntereses;
     char** intereses;
-    
-    /*
-    char nombre[20];
-    int pais; //supongo que es int porque la profe da una cantidad de países
-    int edad;
-    int* amigos;
-    bool creador; //0 false, 1 true
-    char* intereses;
-    */
-    
 } Usuario;
 
 int main(int argc, char const* argv[]) {
     int cantidadUsuarios;
     char nombreArchivo[200];
     char buff[200];
+    char filtropais[20];
+    int filtroMin;
+    int filtroMax;
+    char filtrointA[20]
+    int filtrointB;
 
     FILE* archivo = NULL;
 
@@ -50,6 +45,33 @@ int main(int argc, char const* argv[]) {
 
     // Creación de usuarios en memoria dinámica
     Usuario* usuarios = malloc(sizeof(Usuario) * cantidadUsuarios);
+    
+    while (strlen(filtropais) == 0) {
+        printf("Ingrese el pais: ");
+        scanf("%s", filtropais);
+    }
+
+    while (filtroMin < 0 && 120 < filtroMin) {
+        printf("Ingrese la edad minima (0 si no importa): ");
+        scanf("%s", filtroMin);
+    }
+    
+    while (filtroMax < 0 && 120 < filtroMax) {
+        printf("Ingrese la edad maxima (120 si no importa): ");
+        scanf("%s", filtroMax);
+    }
+
+    while (filtrointB < -1 && 0 < filtrointB) {
+        printf("Ingrese el interes (-1 si no importa): ");
+        char aux[] = "-1";
+        scanf("%s", filtrointA);
+        int comp = strcmp(filtrointA, aux);
+        if(comp == 0){
+            filtrointB = -1;
+        }else{
+            filtrointB = 0;
+        }
+    }
 
     for (int i = 0; i < cantidadUsuarios; ++i) {
         fscanf(archivo, "%s\n", usuarios[i].nombre);
@@ -73,31 +95,34 @@ int main(int argc, char const* argv[]) {
             usuarios[i].intereses[j] = malloc(sizeof(char) * 20);
             fscanf(archivo, "%s\n", usuarios[i].intereses[j]);
         }
-
-
     }
+    
+    
 
     // Prints de prueba
     printf("Cantidad de usuarios: %d\n", cantidadUsuarios);
     for (int i = 0; i < cantidadUsuarios; ++i) {
         printf("Nombre: %s\n", usuarios[i].nombre);
-        printf("País: %s\n", usuarios[i].pais);
+        printf("Pais: %s\n", usuarios[i].pais);
         printf("Edad: %d\n", usuarios[i].edad);
         printf("Creador de contenido: %d\n", usuarios[i].creadorContenido);
-        printf("Número de amigos: %d\n", usuarios[i].numAmigos);
+        printf("Numero de amigos: %d\n", usuarios[i].numAmigos);
         printf("Amigos:\n");
         for (int j = 0; j < usuarios[i].numAmigos; ++j) {
             printf("- %s\n", usuarios[i].amigos[j]);
         }
 
-        printf("Número de intereses: %d\n", usuarios[i].numIntereses);
+        printf("Numero de intereses: %d\n", usuarios[i].numIntereses);
         printf("intereses:\n");
         for (int j = 0; j < usuarios[i].numIntereses; ++j) {
             printf("- %s\n", usuarios[i].intereses[j]);
         }
         printf("\n");
+    }
 
-
+    printf("Cantidad de usuarios: %d\n", cantidadUsuarios);
+    for (int i = 0; i < cantidadUsuarios; ++i) {
+        printf("%s, ", usuarios[i].nombre);
     }
 
     // Liberar la memoria asignada
