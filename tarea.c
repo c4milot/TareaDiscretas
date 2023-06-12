@@ -19,10 +19,11 @@ int main(int argc, char const* argv[]) {
     char nombreArchivo[200];
     char buff[200];
     char filtropais[20];
-    int filtroMin;
-    int filtroMax;
-    char filtrointA[20]
-    int filtrointB;
+    int filtropaisB = -2;
+    int filtroMin = -1;
+    int filtroMax = -1;
+    char filtrointA[20];
+    int filtrointB = -2;
 
     FILE* archivo = NULL;
 
@@ -46,22 +47,30 @@ int main(int argc, char const* argv[]) {
     // Creación de usuarios en memoria dinámica
     Usuario* usuarios = malloc(sizeof(Usuario) * cantidadUsuarios);
     
-    while (strlen(filtropais) == 0) {
-        printf("Ingrese el pais: ");
+    while (filtropaisB < -1 || 0 < filtropaisB || (scanf("%s", filtropais) != 1)) {
+        printf("Ingrese el pais (-1 si no importa): ");
+        char aux[] = "-1";
         scanf("%s", filtropais);
+        int comp = strcmp(filtropais, aux);
+        if(comp == 0){
+            filtropaisB = -1;
+        }else{
+            filtropaisB = 0;
+        }
     }
 
-    while (filtroMin < 0 && 120 < filtroMin) {
+    while (filtroMin < 0 || 120 < filtroMin) {
         printf("Ingrese la edad minima (0 si no importa): ");
-        scanf("%s", filtroMin);
+        scanf(" %d", &filtroMin);
+        while( getchar() != '\n' );
     }
     
-    while (filtroMax < 0 && 120 < filtroMax) {
+    while (filtroMax < 0 || 120 < filtroMax) {
         printf("Ingrese la edad maxima (120 si no importa): ");
-        scanf("%s", filtroMax);
+        scanf(" %d", &filtroMax);
     }
 
-    while (filtrointB < -1 && 0 < filtrointB) {
+    while (filtrointB < -1 || 0 < filtrointB) {
         printf("Ingrese el interes (-1 si no importa): ");
         char aux[] = "-1";
         scanf("%s", filtrointA);
@@ -72,6 +81,9 @@ int main(int argc, char const* argv[]) {
             filtrointB = 0;
         }
     }
+    
+    printf("Parametros: %d %d %d %d \n", filtropaisB, filtroMin, filtroMax, filtrointB);
+    printf("Parametros: %s   %s \n", filtropais, filtrointA);
 
     for (int i = 0; i < cantidadUsuarios; ++i) {
         fscanf(archivo, "%s\n", usuarios[i].nombre);
@@ -124,6 +136,9 @@ int main(int argc, char const* argv[]) {
     for (int i = 0; i < cantidadUsuarios; ++i) {
         printf("%s, ", usuarios[i].nombre);
     }
+
+    printf("\nParametros: %d %d %d %d \n", filtropaisB, filtroMin, filtroMax, filtrointB);
+    printf("Parametros: %s   %s \n", filtropais, filtrointA);
 
     // Liberar la memoria asignada
     for (int i = 0; i < cantidadUsuarios; ++i) {
