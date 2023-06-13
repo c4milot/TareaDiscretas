@@ -46,13 +46,14 @@ int main(int argc, char const* argv[]) {
 
     // Creación de usuarios en memoria dinámica
     Usuario* usuarios = malloc(sizeof(Usuario) * cantidadUsuarios);
+
+
+    //Filtros de busqueda
     
-    while (filtropaisB < -1 || 0 < filtropaisB || (scanf("%s", filtropais) != 1)) {
+    while (filtropaisB < -1 || 0 < filtropaisB) {
         printf("Ingrese el pais (-1 si no importa): ");
-        char aux[] = "-1";
         scanf("%s", filtropais);
-        int comp = strcmp(filtropais, aux);
-        if(comp == 0){
+        if(strcmp(filtropais, "-1") == 0){
             filtropaisB = -1;
         }else{
             filtropaisB = 0;
