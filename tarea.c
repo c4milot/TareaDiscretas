@@ -24,7 +24,6 @@
         int filtroMax = -1;
         char filtrointA[20];
         int filtrointB = -2;
-        char *elegidos;
 
         FILE* archivo = NULL;
 
@@ -138,10 +137,9 @@
 
         printf("\nParametros: %d %d %d %d \n", filtropaisB, filtroMin, filtroMax, filtrointB);
         printf("Parametros: %s   %s \n", filtropais, filtrointA);
-
+    
         //Test del filtro
         for (int i = 0; i < cantidadUsuarios; ++i) {
-            //char *elegidos;
             
             if(strcmp(filtropais, "-1") == 0){           //Si no hay filtro pais
                 if(filtroMin < usuarios[i].edad && usuarios[i].edad < filtroMax){
@@ -174,30 +172,15 @@
                     }
                 }
             }
-
-            /*
-            int comp1;
-            int comp2;
-            int tam = sizeof(usuarios[i].intereses) / sizeof(usuarios[i].intereses[0]);
-
-            if (strcmp(filtropais,"-1") != 0) comp1 = strcmp(filtropais, usuarios[i].pais);
-            
-            for(int j = 0; j < tam; ++j){
-                comp2 = strcmp(filtrointA, usuarios[i].intereses[j]);
-                if(comp2 == 0){
-                    j = tam-1;
-                }
-            }
-
-            if(filtropaisB != -1 && comp1 == 0 && filtrointB != -1 && comp2 == 0){
-                if(filtroMin < usuarios[i].edad && usuarios[i].edad < filtroMax || filtroMin == usuarios[i].edad || filtroMax == usuarios[i].edad){
-                    printf("%s ", usuarios[i].nombre);
-                }
-            }else if(filtropaisB){
-                int a;
-            }
-            */
         }
+
+        
+        for (int i = 0; i < cantidadUsuarios; ++i) {
+            //hacer que busque caminos entre los usuarios y que vea cuando no existe caminos entre los grupos
+            //cuando ya no puede ir a otro grupo suma 1 a count, que cuenta las comunidades
+
+        }
+
 
         // Liberar la memoria asignada
         for (int i = 0; i < cantidadUsuarios; ++i) {
