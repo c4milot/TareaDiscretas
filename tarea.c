@@ -34,7 +34,17 @@
                         usuarios[j].numAristas++;
                         usuarios[j].aristas = realloc(usuarios[j].aristas, sizeof(int)* usuarios[j].numAristas);
                         usuarios[j].aristas[usuarios[j].numAristas-1] = i;
-                        printf("el usuario %s esta unido a %s \n", usuarios[i].nombre, usuarios[j].nombre);
+                    }else{
+                        for (int l = 0; l < usuarios[j].numAmigos; ++l)
+                        {
+                            if (strcmp(usuarios[i].amigos[k], usuarios[j].nombre) == 0 && strcmp(usuarios[j].amigos[l], usuarios[i].nombre) == 0 && usuarios[i].creadorContenido == 0)
+                            {
+                                usuarios[i].numAristas++;
+                                usuarios[i].aristas = realloc(usuarios[i].aristas, sizeof(int)* usuarios[i].numAristas);
+                                usuarios[i].aristas[usuarios[i].numAristas-1] = j;
+                                printf("el usuario %s esta unido a %s \n", usuarios[i].nombre, usuarios[j].nombre);
+                            }
+                        }
                     }
                 }
             }
