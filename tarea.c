@@ -46,9 +46,6 @@ int main(int argc, char const* argv[]) {
 
     // Creación de usuarios en memoria dinámica
     Usuario* usuarios = malloc(sizeof(Usuario) * cantidadUsuarios);
-
-
-    //Filtros de busqueda
     
     while (filtropaisB < -1 || 0 < filtropaisB) {
         printf("Ingrese el pais (-1 si no importa): ");
@@ -69,6 +66,7 @@ int main(int argc, char const* argv[]) {
     while (filtroMax < 0 || 120 < filtroMax) {
         printf("Ingrese la edad maxima (120 si no importa): ");
         scanf(" %d", &filtroMax);
+        while( getchar() != '\n' );
     }
 
     while (filtrointB < -1 || 0 < filtrointB) {
@@ -110,7 +108,6 @@ int main(int argc, char const* argv[]) {
         }
     }
     
-    
 
     // Prints de prueba
     printf("Cantidad de usuarios: %d\n", cantidadUsuarios);
@@ -140,6 +137,23 @@ int main(int argc, char const* argv[]) {
 
     printf("\nParametros: %d %d %d %d \n", filtropaisB, filtroMin, filtroMax, filtrointB);
     printf("Parametros: %s   %s \n", filtropais, filtrointA);
+
+    //Test del filtro
+    for (int i = 0; i < cantidadUsuarios; ++i) {
+        int comp1 = strcmp(filtropais, usuarios[i].pais);
+        int tam = sizeof(usuarios[i].intereses) / sizeof(usuarios[i].intereses[0]);
+        int comp2;
+        for(int j = 0; i < tam; ++i){
+            comp2 = strcmp(filtrointA, usuarios[i].intereses[j]);
+            if(comp2 == 0){
+                j = tam-1;
+            }
+        }
+
+        if(filtropaisB != -1 && comp1 == 0 && filtrointB != -1 && comp2 == 0 && filtroMin < usuarios[i].edad && usuarios[i].edad < filtroMax || filtroMin == usuarios[i].edad || filtroMax == usuarios[i].edad){
+            printf("%s, ", usuarios[i].nombre);
+        }
+    }
 
     // Liberar la memoria asignada
     for (int i = 0; i < cantidadUsuarios; ++i) {
