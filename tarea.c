@@ -13,6 +13,8 @@
         int numIntereses;
         char** intereses;
     } Usuario;
+    
+    void DFS(){}
 
     int main(int argc, char const* argv[]) {
         int cantidadUsuarios;
@@ -178,7 +180,11 @@
         
         for (int i = 0; i < cantidadUsuarios; ++i) {
             //hacer que busque caminos entre los usuarios y que vea cuando no existe caminos entre los grupos
-
+            for(int j = 0; j < cantidadUsuarios; ++j){
+                for(int k = 0; k< cantidadUsuarios; ++k){
+                    strcmp(usuarios[i].nombre, usuarios[j].amigos[k]);
+                }
+            }
         }
 
 
