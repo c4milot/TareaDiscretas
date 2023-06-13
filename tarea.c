@@ -12,9 +12,38 @@
         char** amigos;
         int numIntereses;
         char** intereses;
+        bool visitado;
+        int distancia;
+        int padre;
+        int numAristas;
+        int* aristas;
     } Usuario;
+
+    void encontrarAristas(int cantidadUsuarios, Usuario* usuarios){
+        for (int i = 0; i < cantidadUsuarios; ++i)
+        {
+            for (int j = 0; j < cantidadUsuarios; ++j)
+            {
+                for (int k = 0; k < usuarios[i].numAmigos; ++k)
+                {
+                    if (strcmp(usuarios[i].amigos[k], usuarios[j].nombre) == 0 && usuarios[j].creadorContenido == 1)
+                    {
+                        usuarios[i].numAristas++;
+                        usuarios[i].aristas = realloc(usuarios[i].aristas, sizeof(int)* usuarios[i].numAristas);
+                        usuarios[i].aristas[usuarios[i].numAristas-1] = j;
+                        usuarios[j].numAristas++;
+                        usuarios[j].aristas = realloc(usuarios[j].aristas, sizeof(int)* usuarios[j].numAristas);
+                        usuarios[j].aristas[usuarios[j].numAristas-1] = i;
+                        printf("el usuario %s esta unido a %s \n", usuarios[i].nombre, usuarios[j].nombre);
+                    }
+                }
+            }
+        }
+    }
     
-    void DFS(){}
+    void DFS(){
+
+    }
 
     int main(int argc, char const* argv[]) {
         int cantidadUsuarios;
@@ -107,7 +136,14 @@
                 usuarios[i].intereses[j] = malloc(sizeof(char) * 20);
                 fscanf(archivo, "%s\n", usuarios[i].intereses[j]);
             }
+
+            usuarios[i].visitado = false;
+            usuarios[i].distancia = -1;
+            usuarios[i].padre = -1;
+            usuarios[i].numAristas = 0;
         }
+
+        encontrarAristas(cantidadUsuarios, usuarios);
         
 
         // Prints de prueba
@@ -127,6 +163,12 @@
             printf("intereses:\n");
             for (int j = 0; j < usuarios[i].numIntereses; ++j) {
                 printf("- %s\n", usuarios[i].intereses[j]);
+            }
+
+            printf("aristas:\n");
+            for (int j = 0; j < usuarios[i].numAristas; ++j)
+            {
+                printf("%d\n", usuarios[i].aristas[j]);
             }
             printf("\n");
         }
