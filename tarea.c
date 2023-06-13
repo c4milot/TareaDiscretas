@@ -21,10 +21,10 @@
         char filtropais[20];
         int filtropaisB = -2;
         int filtroMin = -1;
-j        int filtroMax = -1;
+        int filtroMax = -1;
         char filtrointA[20];
         int filtrointB = -2;
-        char **elegidos[20];
+        char *elegidos;
 
         FILE* archivo = NULL;
 
@@ -141,29 +141,36 @@ j        int filtroMax = -1;
 
         //Test del filtro
         for (int i = 0; i < cantidadUsuarios; ++i) {
-            //char **elegidos;
-
+            //char *elegidos;
+            
             if(strcmp(filtropais, "-1") == 0){           //Si no hay filtro pais
                 if(filtroMin < usuarios[i].edad && usuarios[i].edad < filtroMax){
                     if(filtrointB == -1){ //Si no hay filtro interes
-                      //añadir a char **elegidos  
+                      printf("%s ", usuarios[i].nombre);
                     }else if(filtrointB == 0){ //Si hay filtro interes
                         int tam = sizeof(usuarios[i].intereses) / sizeof(usuarios[i].intereses[0]);
                         for(int j = 0; j < tam; ++j){
-                          if( strcmp(filtrointA, usuarios[i].intereses[j]) == 0) {
-             
-                    j = tam-1;
+                            if(strcmp(filtrointA, usuarios[i].intereses[j]) == 0){
+                                printf("%s ", usuarios[i].nombre);
+                                j = tam-1;
+                            }
+                        }
+                    }
                 }
-            }
-
-                  }
-                }
-            }else if(strcmp(filtropais, "-1") != 0){     //Si si hay filtro pais
-                if(filtroMin < usuarios[i].edad && usuarios[i].edad < filtroMax){
-                    if(filtrointB == -1){ //Si no hay filtro interes
-
-                    }else if(filtrointB == 0){ //Si hay filtro interes
-
+            }else if(strcmp(filtropais, "-1") != 0){     //Si hay filtro pais
+                if(strcmp(usuarios[i].pais, filtropais) == 0){
+                    if(filtroMin < usuarios[i].edad && usuarios[i].edad < filtroMax){
+                        if(filtrointB == -1){ //Si no hay filtro interes
+                          printf("%s ", usuarios[i].nombre);
+                        }else if(filtrointB == 0){ //Si hay filtro interes
+                            int tam = sizeof(usuarios[i].intereses) / sizeof(usuarios[i].intereses[0]);
+                            for(int j = 0; j < tam; ++j){
+                                if(strcmp(filtrointA, usuarios[i].intereses[j]) == 0){
+                                    printf("%s ", usuarios[i].nombre);
+                                    j = tam-1;
+                                }
+                            }
+                        }
                     }
                 }
             }
