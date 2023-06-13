@@ -24,6 +24,7 @@ int main(int argc, char const* argv[]) {
     int filtroMax = -1;
     char filtrointA[20];
     int filtrointB = -2;
+    char **elegidos[20];
 
     FILE* archivo = NULL;
 
@@ -71,15 +72,14 @@ int main(int argc, char const* argv[]) {
 
     while (filtrointB < -1 || 0 < filtrointB) {
         printf("Ingrese el interes (-1 si no importa): ");
-        char aux[] = "-1";
         scanf("%s", filtrointA);
-        int comp = strcmp(filtrointA, aux);
-        if(comp == 0){
+        if(strcmp(filtrointA, "-1") == 0){
             filtrointB = -1;
         }else{
             filtrointB = 0;
         }
     }
+
     
     printf("Parametros: %d %d %d %d \n", filtropaisB, filtroMin, filtroMax, filtrointB);
     printf("Parametros: %s   %s \n", filtropais, filtrointA);
@@ -132,7 +132,8 @@ int main(int argc, char const* argv[]) {
 
     printf("Cantidad de usuarios: %d\n", cantidadUsuarios);
     for (int i = 0; i < cantidadUsuarios; ++i) {
-        printf("%s, ", usuarios[i].nombre);
+        printf("%s", usuarios[i].nombre);
+        if(i<cantidadUsuarios-1) printf(", ");
     }
 
     printf("\nParametros: %d %d %d %d \n", filtropaisB, filtroMin, filtroMax, filtrointB);
@@ -140,19 +141,48 @@ int main(int argc, char const* argv[]) {
 
     //Test del filtro
     for (int i = 0; i < cantidadUsuarios; ++i) {
-        int comp1 = strcmp(filtropais, usuarios[i].pais);
-        int tam = sizeof(usuarios[i].intereses) / sizeof(usuarios[i].intereses[0]);
+        //char **elegidos;
+
+        if(strcmp(filtropais, "-1") == 0){ 
+            if(filtroMin < usuarios[i].edad && usuarios[i].edad < filtroMax){
+                if(filtrointB == -1){
+                    
+                }else if(filtrointB == 0){
+                    
+                }
+            }
+        }else if(strcmp(filtropais, "-1") != 0){
+            if(filtroMin < usuarios[i].edad && usuarios[i].edad < filtroMax){
+                if(filtrointB == -1){
+
+                }else if(filtrointB == 0){
+
+                }
+            }
+        }
+
+        /*
+        int comp1;
         int comp2;
-        for(int j = 0; i < tam; ++i){
+        int tam = sizeof(usuarios[i].intereses) / sizeof(usuarios[i].intereses[0]);
+
+        if (strcmp(filtropais,"-1") != 0) comp1 = strcmp(filtropais, usuarios[i].pais);
+        
+        for(int j = 0; j < tam; ++j){
             comp2 = strcmp(filtrointA, usuarios[i].intereses[j]);
             if(comp2 == 0){
                 j = tam-1;
             }
         }
 
-        if(filtropaisB != -1 && comp1 == 0 && filtrointB != -1 && comp2 == 0 && filtroMin < usuarios[i].edad && usuarios[i].edad < filtroMax || filtroMin == usuarios[i].edad || filtroMax == usuarios[i].edad){
-            printf("%s, ", usuarios[i].nombre);
+        if(filtropaisB != -1 && comp1 == 0 && filtrointB != -1 && comp2 == 0){
+            if(filtroMin < usuarios[i].edad && usuarios[i].edad < filtroMax || filtroMin == usuarios[i].edad || filtroMax == usuarios[i].edad){
+                printf("%s ", usuarios[i].nombre);
+            }
+        }else if(filtropaisB){
+            int a;
         }
+        */
     }
 
     // Liberar la memoria asignada
