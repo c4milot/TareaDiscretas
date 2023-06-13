@@ -173,11 +173,11 @@
                 }
             }
         }
+        //idealmente añadir los nombres a un arreglo de strings lo que no me acuerdo como se hacia ahora mismo
 
         
         for (int i = 0; i < cantidadUsuarios; ++i) {
             //hacer que busque caminos entre los usuarios y que vea cuando no existe caminos entre los grupos
-            //cuando ya no puede ir a otro grupo suma 1 a count, que cuenta las comunidades
 
         }
 
