@@ -56,9 +56,9 @@ void aplicarFiltros(Usuario* usuarios, int cantidadUsuarios, char* filtropais, i
         for (int i = 0; i < cantidadUsuarios; ++i)
         {
         
-            if (strcmp(filtropais, "-1"))
+            if (strcasecmp(filtropais, "-1"))
             {
-                if(strcmp(filtropais, usuarios[i].pais)){
+                if(strcasecmp(filtropais, usuarios[i].pais)){
                     usuarios[i].visitado = true;
                 }
             }
@@ -73,16 +73,17 @@ void aplicarFiltros(Usuario* usuarios, int cantidadUsuarios, char* filtropais, i
             {
                 usuarios[i].visitado = true;
             }
-            if (strcmp(filtrointA, "-1"))
+            if (strcasecmp(filtrointA, "-1") && !usuarios[i].visitado)
             {
-                usuarios[i].visitado = true;
+                bool aux = true;
+                
                 for (int j = 0; j < usuarios[i].numIntereses; ++j)
                 {
-                    if(!strcmp(filtrointA, usuarios[i].intereses[j])){
-                        usuarios[i].visitado = false;
+                    if(!strcasecmp(filtrointA, usuarios[i].intereses[j])){
+                        aux = false;
                     }
                 }
-            
+                usuarios[i].visitado = aux;
             }
         }
     }
@@ -94,7 +95,7 @@ void aplicarFiltros(Usuario* usuarios, int cantidadUsuarios, char* filtropais, i
             {
                 for (int k = 0; k < usuarios[i].numAmigos; ++k)
                 {
-                    if (strcmp(usuarios[i].amigos[k], usuarios[j].nombre) == 0 && usuarios[j].creadorContenido == 1)
+                    if (strcasecmp(usuarios[i].amigos[k], usuarios[j].nombre) == 0 && usuarios[j].creadorContenido == 1)
                     {
                         usuarios[i].numAristas++;
                         usuarios[i].aristas = realloc(usuarios[i].aristas, sizeof(int)* usuarios[i].numAristas);
@@ -105,7 +106,7 @@ void aplicarFiltros(Usuario* usuarios, int cantidadUsuarios, char* filtropais, i
                     }else{
                         for (int l = 0; l < usuarios[j].numAmigos; ++l)
                         {
-                            if (strcmp(usuarios[i].amigos[k], usuarios[j].nombre) == 0 && strcmp(usuarios[j].amigos[l], usuarios[i].nombre) == 0 && usuarios[i].creadorContenido == 0)
+                            if (strcasecmp(usuarios[i].amigos[k], usuarios[j].nombre) == 0 && strcasecmp(usuarios[j].amigos[l], usuarios[i].nombre) == 0 && usuarios[i].creadorContenido == 0)
                             {
                                 usuarios[i].numAristas++;
                                 usuarios[i].aristas = realloc(usuarios[i].aristas, sizeof(int)* usuarios[i].numAristas);
@@ -163,7 +164,7 @@ void aplicarFiltros(Usuario* usuarios, int cantidadUsuarios, char* filtropais, i
         while (filtropaisB < -1 || 0 < filtropaisB) {
             printf("Ingrese el pais (-1 si no importa): ");
             scanf("%s", filtropais);
-            if(strcmp(filtropais, "-1") == 0){
+            if(strcasecmp(filtropais, "-1") == 0){
                 filtropaisB = -1;
             }else{
                 filtropaisB = 0;
@@ -185,7 +186,7 @@ void aplicarFiltros(Usuario* usuarios, int cantidadUsuarios, char* filtropais, i
         while (filtrointB < -1 || 0 < filtrointB) {
             printf("Ingrese el interes (-1 si no importa): ");
             scanf("%s", filtrointA);
-            if(strcmp(filtrointA, "-1") == 0){
+            if(strcasecmp(filtrointA, "-1") == 0){
                 filtrointB = -1;
             }else{
                 filtrointB = 0;
@@ -278,29 +279,29 @@ void aplicarFiltros(Usuario* usuarios, int cantidadUsuarios, char* filtropais, i
         //Test del filtro
         for (int i = 0; i < cantidadUsuarios; ++i) {
             
-            if(strcmp(filtropais, "-1") == 0){           //Si no hay filtro pais
+            if(strcasecmp(filtropais, "-1") == 0){           //Si no hay filtro pais
                 if(filtroMin < usuarios[i].edad && usuarios[i].edad < filtroMax){
                     if(filtrointB == -1){ //Si no hay filtro interes
                       printf("%s ", usuarios[i].nombre);
                     }else if(filtrointB == 0){ //Si hay filtro interes
                         int tam = sizeof(usuarios[i].intereses) / sizeof(usuarios[i].intereses[0]);
                         for(int j = 0; j < tam; ++j){
-                            if(strcmp(filtrointA, usuarios[i].intereses[j]) == 0){
+                            if(strcasecmp(filtrointA, usuarios[i].intereses[j]) == 0){
                                 printf("%s ", usuarios[i].nombre);
                                 j = tam-1;
                             }
                         }
                     }
                 }
-            }else if(strcmp(filtropais, "-1") != 0){     //Si hay filtro pais
-                if(strcmp(usuarios[i].pais, filtropais) == 0){
+            }else if(strcasecmp(filtropais, "-1") != 0){     //Si hay filtro pais
+                if(strcasecmp(usuarios[i].pais, filtropais) == 0){
                     if(filtroMin < usuarios[i].edad && usuarios[i].edad < filtroMax){
                         if(filtrointB == -1){ //Si no hay filtro interes
                           printf("%s ", usuarios[i].nombre);
                         }else if(filtrointB == 0){ //Si hay filtro interes
                             int tam = sizeof(usuarios[i].intereses) / sizeof(usuarios[i].intereses[0]);
                             for(int j = 0; j < tam; ++j){
-                                if(strcmp(filtrointA, usuarios[i].intereses[j]) == 0){
+                                if(strcasecmp(filtrointA, usuarios[i].intereses[j]) == 0){
                                     printf("%s ", usuarios[i].nombre);
                                     j = tam-1;
                                 }
@@ -317,7 +318,7 @@ void aplicarFiltros(Usuario* usuarios, int cantidadUsuarios, char* filtropais, i
             //hacer que busque caminos entre los usuarios y que vea cuando no existe caminos entre los grupos
             for(int j = 0; j < cantidadUsuarios; ++j){
                 for(int k = 0; k< cantidadUsuarios; ++k){
-                    strcmp(usuarios[i].nombre, usuarios[j].amigos[k]);
+                    strcasecmp(usuarios[i].nombre, usuarios[j].amigos[k]);
                 }
             }
         }
