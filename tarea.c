@@ -188,9 +188,6 @@ int main(int argc, char const* argv[]) {
 
     FILE* archivo = NULL;
 
-    // Asigna el nombre automáticamente para ahorrar tiempo de pruebas
-    archivo = fopen("red.txt", "r");
-
     // Lectura de archivo
     while (archivo == NULL) {
         printf("Ingrese el nombre del archivo: ");
@@ -296,7 +293,7 @@ int main(int argc, char const* argv[]) {
     }while(1);
         
 
-    // Liberar la memoria asignada
+    
     for (int i = 0; i < cantidadUsuarios; ++i) {
         for (int j = 0; j < usuarios[i].numAmigos; ++j) {
             free(usuarios[i].amigos[j]);
@@ -304,7 +301,7 @@ int main(int argc, char const* argv[]) {
         free(usuarios[i].amigos);
     }
 
-    // Liberar la memoria asignada
+    
     for (int i = 0; i < cantidadUsuarios; ++i) {
         for (int j = 0; j < usuarios[i].numIntereses; ++j) {
             free(usuarios[i].intereses[j]);
