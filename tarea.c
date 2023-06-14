@@ -280,6 +280,10 @@ int main(int argc, char const* argv[]) {
             }
         }
 
+        printf("\n");
+        printf("Los parametros son: %s %d %d %s\n", filtropais, filtroMin, filtroMax, filtrointA);
+        printf("\n");
+
         aplicarFiltros(usuarios, cantidadUsuarios, filtropais, filtroMin, filtroMax, filtrointA);
         encontrarAristas(cantidadUsuarios, usuarios);
 
