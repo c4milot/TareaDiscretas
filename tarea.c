@@ -50,9 +50,42 @@
         }
     }
 
-    // Liberar la memoria de la cola
     free(cola);
 }
+void aplicarFiltros(Usuario* usuarios, int cantidadUsuarios, char* filtropais, int filtroMin, int filtroMax, char* filtrointA){
+        for (int i = 0; i < cantidadUsuarios; ++i)
+        {
+        
+            if (strcmp(filtropais, "-1"))
+            {
+                if(strcmp(filtropais, usuarios[i].pais)){
+                    usuarios[i].visitado = true;
+                }
+            }
+            if (filtroMin != 0)
+            {
+                if (usuarios[i].edad < filtroMin)
+                {
+                    usuarios[i].visitado = true;
+                }
+            }
+            if (filtroMax < usuarios[i].edad)
+            {
+                usuarios[i].visitado = true;
+            }
+            if (strcmp(filtrointA, "-1"))
+            {
+                usuarios[i].visitado = true;
+                for (int j = 0; j < usuarios[i].numIntereses; ++j)
+                {
+                    if(!strcmp(filtrointA, usuarios[i].intereses[j])){
+                        usuarios[i].visitado = false;
+                    }
+                }
+            
+            }
+        }
+    }
 
     void encontrarAristas(int cantidadUsuarios, Usuario* usuarios){
         for (int i = 0; i < cantidadUsuarios; ++i)
@@ -77,7 +110,6 @@
                                 usuarios[i].numAristas++;
                                 usuarios[i].aristas = realloc(usuarios[i].aristas, sizeof(int)* usuarios[i].numAristas);
                                 usuarios[i].aristas[usuarios[i].numAristas-1] = j;
-                                printf("el usuario %s esta unido a %s \n", usuarios[i].nombre, usuarios[j].nombre);
                             }
                         }
                     }
@@ -91,6 +123,8 @@
             }
         }
     }
+
+    
 
 
     int main(int argc, char const* argv[]) {
@@ -125,7 +159,7 @@
 
         // Creación de usuarios en memoria dinámica
         Usuario* usuarios = malloc(sizeof(Usuario) * cantidadUsuarios);
-       /* 
+
         while (filtropaisB < -1 || 0 < filtropaisB) {
             printf("Ingrese el pais (-1 si no importa): ");
             scanf("%s", filtropais);
@@ -161,7 +195,7 @@
         
         printf("Parametros: %d %d %d %d \n", filtropaisB, filtroMin, filtroMax, filtrointB);
         printf("Parametros: %s   %s \n", filtropais, filtrointA);
-*/
+
         for (int i = 0; i < cantidadUsuarios; ++i) {
             fscanf(archivo, "%s\n", usuarios[i].nombre);
             fscanf(archivo, "%s\n", usuarios[i].pais);
@@ -191,6 +225,7 @@
             usuarios[i].numAristas = 0;
         }
 
+        aplicarFiltros(usuarios, cantidadUsuarios, filtropais, filtroMin, filtroMax, filtrointA);
         encontrarAristas(cantidadUsuarios, usuarios);
         
 
@@ -198,8 +233,9 @@
         for (int i = 0; i < cantidadUsuarios; ++i)
         {
             printf("distancia %s %d\n",usuarios[i].nombre, usuarios[i].distancia);
+            printf("Padre %s\n", usuarios[usuarios[i].padre].nombre);
         }
-
+/*
         // Prints de prueba
         printf("Cantidad de usuarios: %d\n", cantidadUsuarios);
         for (int i = 0; i < cantidadUsuarios; ++i) {
@@ -236,6 +272,9 @@
         printf("\nParametros: %d %d %d %d \n", filtropaisB, filtroMin, filtroMax, filtrointB);
         printf("Parametros: %s   %s \n", filtropais, filtrointA);
     
+
+
+
         //Test del filtro
         for (int i = 0; i < cantidadUsuarios; ++i) {
             
@@ -282,7 +321,7 @@
                 }
             }
         }
-
+*/
 
         // Liberar la memoria asignada
         for (int i = 0; i < cantidadUsuarios; ++i) {
