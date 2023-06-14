@@ -1,46 +1,36 @@
-    #include <stdio.h>
-    #include <stdlib.h>
-    #include <string.h>
-    #include <stdbool.h> 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h> 
 
-    typedef struct {
-        char nombre[20];
-        char pais[20];
-        int edad;
-        int creadorContenido;
-        int numAmigos;
-        char** amigos;
-        int numIntereses;
-        char** intereses;
-        bool visitado;
-        int distancia;
-        int padre;
-        int numAristas;
-        int* aristas;
-    } Usuario;
+typedef struct {
+    char nombre[20];
+    char pais[20];
+    int edad;
+    int creadorContenido;
+    int numAmigos;
+    char** amigos;
+    int numIntereses;
+    char** intereses;
+    bool visitado;
+    int distancia;
+    int padre;
+    int numAristas;
+    int* aristas;
+} Usuario;
 
-    void BFS(int cantidadUsuarios, Usuario* usuarios, int origen) {
-    // Crear una cola para almacenar los índices de los usuarios
+void BFS(int cantidadUsuarios, Usuario* usuarios, int origen){
     int* cola = malloc(sizeof(int) * cantidadUsuarios);
     int frente = 0;
     int final = 0;
-
-    // Marcar el origen como visitado y establecer su distancia como 0
     usuarios[origen].visitado = true;
     usuarios[origen].distancia = 0;
     cola[final++] = origen;
-
-    // Realizar la búsqueda por amplitud
     while (frente != final) {
         int actual = cola[frente++];
         Usuario usuarioActual = usuarios[actual];
-
-        // Recorrer las aristas del usuario actual
         for (int i = 0; i < usuarioActual.numAristas; ++i) {
             int vecino = usuarioActual.aristas[i];
-
-            // Si el vecino no ha sido visitado, marcarlo como visitado
-            // y establecer su distancia y padre correspondientes
             if (!usuarios[vecino].visitado) {
                 usuarios[vecino].visitado = true;
                 usuarios[vecino].distancia = usuarioActual.distancia + 1;
@@ -49,89 +39,203 @@
             }
         }
     }
-
-    free(cola);
-}
-void aplicarFiltros(Usuario* usuarios, int cantidadUsuarios, char* filtropais, int filtroMin, int filtroMax, char* filtrointA){
-        for (int i = 0; i < cantidadUsuarios; ++i)
-        {
-        
-            if (strcasecmp(filtropais, "-1"))
+    printf("tiene %d cuentas de usuarios.\n", final);
+    int numCreadores = 0;
+    int numUsuarios = 0;
+    int menorDistaciaC = -1;
+    int menorDistacia = -1;
+    for (int i = 0; i < final; ++i)
+    {
+        if (usuarios[cola[i]].creadorContenido == 1)
+        { 
+            numCreadores++;
+            if (usuarios[cola[i]].distancia < menorDistaciaC || menorDistaciaC == -1)
             {
-                if(strcasecmp(filtropais, usuarios[i].pais)){
-                    usuarios[i].visitado = true;
-                }
+                menorDistaciaC = usuarios[cola[i]].distancia;
             }
-            if (filtroMin != 0)
+        }else{
+            numUsuarios++;
+            if (usuarios[cola[i]].distancia < menorDistacia || menorDistacia == -1)
             {
-                if (usuarios[i].edad < filtroMin)
-                {
-                    usuarios[i].visitado = true;
-                }
-            }
-            if (filtroMax < usuarios[i].edad)
-            {
-                usuarios[i].visitado = true;
-            }
-            if (strcasecmp(filtrointA, "-1") && !usuarios[i].visitado)
-            {
-                bool aux = true;
-                
-                for (int j = 0; j < usuarios[i].numIntereses; ++j)
-                {
-                    if(!strcasecmp(filtrointA, usuarios[i].intereses[j])){
-                        aux = false;
-                    }
-                }
-                usuarios[i].visitado = aux;
+                menorDistacia = usuarios[cola[i]].distancia;
             }
         }
     }
 
-    void encontrarAristas(int cantidadUsuarios, Usuario* usuarios){
-        for (int i = 0; i < cantidadUsuarios; ++i)
+    if (numCreadores == 0)
+    {
+        printf("Esta comunidad no tiene creadores de contenido ");
+    }else{
+        printf("Esta comunidad tiene %d creadores de contenido ", numCreadores);
+    }
+    if (numUsuarios == 0)
+    {
+        printf("y no tiene usuarios regulares\n");
+    }else{
+        printf("y tiene %d usuarios regulares\n", numUsuarios);
+    }
+    if (numCreadores != 0){
+        printf("Mejores creadores de contenido:\n");
+        for (int i = 0; i < final; ++i)
         {
-            for (int j = 0; j < cantidadUsuarios; ++j)
+            if (usuarios[cola[i]].creadorContenido == 1 && (usuarios[cola[i]].distancia == menorDistaciaC || final == 2))
             {
-                for (int k = 0; k < usuarios[i].numAmigos; ++k)
+                printf("    %s\n", usuarios[cola[i]].nombre);
+            }
+        }
+    }
+    if (numUsuarios != 0){
+        printf("Mejores usuarios:\n");
+        for (int i = 0; i < final; ++i)
+        {       
+            if (usuarios[cola[i]].creadorContenido != 1 && (usuarios[cola[i]].distancia == menorDistacia || final == 2))
+            {
+                printf("    %s\n", usuarios[cola[i]].nombre);
+            }
+        }
+    }
+    free(cola);
+}
+
+void aplicarFiltros(Usuario* usuarios, int cantidadUsuarios, char* filtropais, int filtroMin, int filtroMax, char* filtrointA){
+    for (int i = 0; i < cantidadUsuarios; ++i)
+    {
+        if (strcasecmp(filtropais, "-1"))
+        {
+            if(strcasecmp(filtropais, usuarios[i].pais)){
+                usuarios[i].visitado = true;
+            }
+        }
+        if (filtroMin != 0)
+        {
+            if (usuarios[i].edad < filtroMin)
+            {
+                usuarios[i].visitado = true;
+            }
+        }
+        if (filtroMax < usuarios[i].edad)
+        {
+            usuarios[i].visitado = true;
+        }
+        if (strcasecmp(filtrointA, "-1") && !usuarios[i].visitado)
+        {
+            bool aux = true;
+    
+            for (int j = 0; j < usuarios[i].numIntereses; ++j)
+            {
+                if(!strcasecmp(filtrointA, usuarios[i].intereses[j])){
+                    aux = false;
+                }
+            }
+            usuarios[i].visitado = aux;
+        }
+    }
+}
+
+void encontrarAristas(int cantidadUsuarios, Usuario* usuarios){
+    for (int i = 0; i < cantidadUsuarios; ++i)
+    {
+        for (int j = 0; j < cantidadUsuarios; ++j)
+        {
+            for (int k = 0; k < usuarios[i].numAmigos; ++k)
+            {
+                if (strcasecmp(usuarios[i].amigos[k], usuarios[j].nombre) == 0 && usuarios[j].creadorContenido == 1)
                 {
-                    if (strcasecmp(usuarios[i].amigos[k], usuarios[j].nombre) == 0 && usuarios[j].creadorContenido == 1)
+                    usuarios[i].numAristas++;
+                    usuarios[i].aristas = realloc(usuarios[i].aristas, sizeof(int)* usuarios[i].numAristas);
+                    usuarios[i].aristas[usuarios[i].numAristas-1] = j;
+                    usuarios[j].numAristas++;
+                    usuarios[j].aristas = realloc(usuarios[j].aristas, sizeof(int)* usuarios[j].numAristas);
+                    usuarios[j].aristas[usuarios[j].numAristas-1] = i;
+                }else{
+                    for (int l = 0; l < usuarios[j].numAmigos; ++l)
                     {
-                        usuarios[i].numAristas++;
-                        usuarios[i].aristas = realloc(usuarios[i].aristas, sizeof(int)* usuarios[i].numAristas);
-                        usuarios[i].aristas[usuarios[i].numAristas-1] = j;
-                        usuarios[j].numAristas++;
-                        usuarios[j].aristas = realloc(usuarios[j].aristas, sizeof(int)* usuarios[j].numAristas);
-                        usuarios[j].aristas[usuarios[j].numAristas-1] = i;
-                    }else{
-                        for (int l = 0; l < usuarios[j].numAmigos; ++l)
+                        if (strcasecmp(usuarios[i].amigos[k], usuarios[j].nombre) == 0 && strcasecmp(usuarios[j].amigos[l], usuarios[i].nombre) == 0 && usuarios[i].creadorContenido == 0)
                         {
-                            if (strcasecmp(usuarios[i].amigos[k], usuarios[j].nombre) == 0 && strcasecmp(usuarios[j].amigos[l], usuarios[i].nombre) == 0 && usuarios[i].creadorContenido == 0)
-                            {
-                                usuarios[i].numAristas++;
-                                usuarios[i].aristas = realloc(usuarios[i].aristas, sizeof(int)* usuarios[i].numAristas);
-                                usuarios[i].aristas[usuarios[i].numAristas-1] = j;
-                            }
+                            usuarios[i].numAristas++;
+                            usuarios[i].aristas = realloc(usuarios[i].aristas, sizeof(int)* usuarios[i].numAristas);
+                            usuarios[i].aristas[usuarios[i].numAristas-1] = j;
                         }
                     }
                 }
             }
         }
+    }
 
-        for (int i = 0; i < cantidadUsuarios; ++i) {
-            if (!usuarios[i].visitado) {
-                BFS(cantidadUsuarios, usuarios, i);
-            }
+    int numComunidades = 0;
+    for (int i = 0; i < cantidadUsuarios; ++i) {
+        if (!usuarios[i].visitado) {
+        numComunidades++;
+        printf("Comunidad %d\n", numComunidades);
+        printf("La comunidad %d tiene ", numComunidades);
+        BFS(cantidadUsuarios, usuarios, i);
         }
     }
+    if (numComunidades == 0)
+    {
+        printf("No existen comunidades con los filtros ingresados.\n");
+    }
+}
 
     
 
 
-    int main(int argc, char const* argv[]) {
-        int cantidadUsuarios;
-        char nombreArchivo[200];
-        char buff[200];
+int main(int argc, char const* argv[]) {
+    int cantidadUsuarios;
+    char nombreArchivo[200];
+    char buff[200];    
+    int numComunidades = 0;
+
+    FILE* archivo = NULL;
+
+    // Asigna el nombre automáticamente para ahorrar tiempo de pruebas
+    archivo = fopen("red.txt", "r");
+
+    // Lectura de archivo
+    while (archivo == NULL) {
+        printf("Ingrese el nombre del archivo: ");
+        scanf("%s", nombreArchivo);
+        archivo = fopen(nombreArchivo, "r");
+        if (archivo == NULL) {
+            printf("Archivo no encontrado\n");
+        }
+    }
+
+    // Lectura y guardado de datos
+    fgets(buff, 200, archivo);
+        cantidadUsuarios = atoi(buff);
+
+    // Creación de usuarios en memoria dinámica
+    Usuario* usuarios = malloc(sizeof(Usuario) * cantidadUsuarios);
+
+    for (int i = 0; i < cantidadUsuarios; ++i) {
+        fscanf(archivo, "%s\n", usuarios[i].nombre);
+        fscanf(archivo, "%s\n", usuarios[i].pais);
+        fscanf(archivo, "%d\n", &usuarios[i].edad);
+        fscanf(archivo, "%d\n", &usuarios[i].creadorContenido);
+        fscanf(archivo, "%d\n", &usuarios[i].numAmigos);
+
+        usuarios[i].amigos = malloc(sizeof(char*) * usuarios[i].numAmigos);
+
+        for (int j = 0; j < usuarios[i].numAmigos; ++j) {
+            usuarios[i].amigos[j] = malloc(sizeof(char) * 20);
+            fscanf(archivo, "%s\n", usuarios[i].amigos[j]);
+        }
+
+        fscanf(archivo, "%d\n", &usuarios[i].numIntereses);
+
+        usuarios[i].intereses = malloc(sizeof(char*) * usuarios[i].numIntereses);
+
+        for (int j = 0; j < usuarios[i].numIntereses; ++j) {
+            usuarios[i].intereses[j] = malloc(sizeof(char) * 20);
+            fscanf(archivo, "%s\n", usuarios[i].intereses[j]);
+        }
+    }
+
+    fclose(archivo);
+
+    do{
+
         char filtropais[20];
         int filtropaisB = -2;
         int filtroMin = -1;
@@ -139,209 +243,75 @@ void aplicarFiltros(Usuario* usuarios, int cantidadUsuarios, char* filtropais, i
         char filtrointA[20];
         int filtrointB = -2;
 
-        FILE* archivo = NULL;
-
-        // Asigna el nombre automáticamente para ahorrar tiempo de pruebas
-        archivo = fopen("red.txt", "r");
-
-        // Lectura de archivo
-        while (archivo == NULL) {
-            printf("Ingrese el nombre del archivo: ");
-            scanf("%s", nombreArchivo);
-            archivo = fopen(nombreArchivo, "r");
-            if (archivo == NULL) {
-                printf("Archivo no encontrado\n");
-            }
-        }
-
-        // Lectura y guardado de datos
-        fgets(buff, 200, archivo);
-        cantidadUsuarios = atoi(buff);
-
-        // Creación de usuarios en memoria dinámica
-        Usuario* usuarios = malloc(sizeof(Usuario) * cantidadUsuarios);
-
-        while (filtropaisB < -1 || 0 < filtropaisB) {
-            printf("Ingrese el pais (-1 si no importa): ");
-            scanf("%s", filtropais);
-            if(strcasecmp(filtropais, "-1") == 0){
-                filtropaisB = -1;
-            }else{
-                filtropaisB = 0;
-            }
-        }
-
-        while (filtroMin < 0 || 120 < filtroMin) {
-            printf("Ingrese la edad minima (0 si no importa): ");
-            scanf(" %d", &filtroMin);
-            while( getchar() != '\n' );
-        }
-        
-        while (filtroMax < 0 || 120 < filtroMax) {
-            printf("Ingrese la edad maxima (120 si no importa): ");
-            scanf(" %d", &filtroMax);
-            while( getchar() != '\n' );
-        }
-
-        while (filtrointB < -1 || 0 < filtrointB) {
-            printf("Ingrese el interes (-1 si no importa): ");
-            scanf("%s", filtrointA);
-            if(strcasecmp(filtrointA, "-1") == 0){
-                filtrointB = -1;
-            }else{
-                filtrointB = 0;
-            }
-        }
-
-        
-        printf("Parametros: %d %d %d %d \n", filtropaisB, filtroMin, filtroMax, filtrointB);
-        printf("Parametros: %s   %s \n", filtropais, filtrointA);
-
-        for (int i = 0; i < cantidadUsuarios; ++i) {
-            fscanf(archivo, "%s\n", usuarios[i].nombre);
-            fscanf(archivo, "%s\n", usuarios[i].pais);
-            fscanf(archivo, "%d\n", &usuarios[i].edad);
-            fscanf(archivo, "%d\n", &usuarios[i].creadorContenido);
-            fscanf(archivo, "%d\n", &usuarios[i].numAmigos);
-
-            usuarios[i].amigos = malloc(sizeof(char*) * usuarios[i].numAmigos);
-
-            for (int j = 0; j < usuarios[i].numAmigos; ++j) {
-                usuarios[i].amigos[j] = malloc(sizeof(char) * 20);
-                fscanf(archivo, "%s\n", usuarios[i].amigos[j]);
-            }
-
-            fscanf(archivo, "%d\n", &usuarios[i].numIntereses);
-
-            usuarios[i].intereses = malloc(sizeof(char*) * usuarios[i].numIntereses);
-
-            for (int j = 0; j < usuarios[i].numIntereses; ++j) {
-                usuarios[i].intereses[j] = malloc(sizeof(char) * 20);
-                fscanf(archivo, "%s\n", usuarios[i].intereses[j]);
-            }
-
+        for (int i = 0; i < cantidadUsuarios; ++i)
+        {
             usuarios[i].visitado = false;
             usuarios[i].distancia = -1;
             usuarios[i].padre = -1;
             usuarios[i].numAristas = 0;
         }
 
+        while (filtropaisB < -1 || filtropaisB > 0) {
+        printf("Ingrese el pais (-1 si no importa): ");
+        scanf("%s", filtropais);
+            if (strcasecmp(filtropais, "-1") == 0) {
+                filtropaisB = -1;
+            } else {
+                filtropaisB = 0;
+            }
+        }
+
+        while (filtroMin < 0 || filtroMin > 120) {
+            printf("Ingrese la edad minima (0 si no importa): ");
+            scanf("%d", &filtroMin);
+            while (getchar() != '\n');
+        }
+
+        while (filtroMax < 0 || filtroMax > 120) {
+            printf("Ingrese la edad maxima (120 si no importa): ");
+            scanf("%d", &filtroMax);
+            while (getchar() != '\n');
+        }
+
+        while (filtrointB < -1 || filtrointB > 0) {
+            printf("Ingrese el interes (-1 si no importa): ");
+            scanf("%s", filtrointA);
+            if (strcasecmp(filtrointA, "-1") == 0) {
+                filtrointB = -1;
+            } else {
+                filtrointB = 0;
+            }
+        }
+
         aplicarFiltros(usuarios, cantidadUsuarios, filtropais, filtroMin, filtroMax, filtrointA);
         encontrarAristas(cantidadUsuarios, usuarios);
-        
 
-
-        for (int i = 0; i < cantidadUsuarios; ++i)
+        char respuesta[2];
+        printf("Desea realizar otra consulta? (S/N)\n");
+        scanf("%s", respuesta);
+        if (strcasecmp(respuesta, "N") == 0)
         {
-            printf("distancia %s %d\n",usuarios[i].nombre, usuarios[i].distancia);
-            printf("Padre %s\n", usuarios[usuarios[i].padre].nombre);
+            break;
         }
-/*
-        // Prints de prueba
-        printf("Cantidad de usuarios: %d\n", cantidadUsuarios);
-        for (int i = 0; i < cantidadUsuarios; ++i) {
-            printf("Nombre: %s\n", usuarios[i].nombre);
-            printf("Pais: %s\n", usuarios[i].pais);
-            printf("Edad: %d\n", usuarios[i].edad);
-            printf("Creador de contenido: %d\n", usuarios[i].creadorContenido);
-            printf("Numero de amigos: %d\n", usuarios[i].numAmigos);
-            printf("Amigos:\n");
-            for (int j = 0; j < usuarios[i].numAmigos; ++j) {
-                printf("- %s\n", usuarios[i].amigos[j]);
-            }
-
-            printf("Numero de intereses: %d\n", usuarios[i].numIntereses);
-            printf("intereses:\n");
-            for (int j = 0; j < usuarios[i].numIntereses; ++j) {
-                printf("- %s\n", usuarios[i].intereses[j]);
-            }
-
-            printf("aristas:\n");
-            for (int j = 0; j < usuarios[i].numAristas; ++j)
-            {
-                printf("%d\n", usuarios[i].aristas[j]);
-            }
-            printf("\n");
-        }
-
-        printf("Cantidad de usuarios: %d\n", cantidadUsuarios);
-        for (int i = 0; i < cantidadUsuarios; ++i) {
-            printf("%s", usuarios[i].nombre);
-            if(i<cantidadUsuarios-1) printf(", ");
-        }
-
-        printf("\nParametros: %d %d %d %d \n", filtropaisB, filtroMin, filtroMax, filtrointB);
-        printf("Parametros: %s   %s \n", filtropais, filtrointA);
-    
-
-
-
-        //Test del filtro
-        for (int i = 0; i < cantidadUsuarios; ++i) {
-            
-            if(strcasecmp(filtropais, "-1") == 0){           //Si no hay filtro pais
-                if(filtroMin < usuarios[i].edad && usuarios[i].edad < filtroMax){
-                    if(filtrointB == -1){ //Si no hay filtro interes
-                      printf("%s ", usuarios[i].nombre);
-                    }else if(filtrointB == 0){ //Si hay filtro interes
-                        int tam = sizeof(usuarios[i].intereses) / sizeof(usuarios[i].intereses[0]);
-                        for(int j = 0; j < tam; ++j){
-                            if(strcasecmp(filtrointA, usuarios[i].intereses[j]) == 0){
-                                printf("%s ", usuarios[i].nombre);
-                                j = tam-1;
-                            }
-                        }
-                    }
-                }
-            }else if(strcasecmp(filtropais, "-1") != 0){     //Si hay filtro pais
-                if(strcasecmp(usuarios[i].pais, filtropais) == 0){
-                    if(filtroMin < usuarios[i].edad && usuarios[i].edad < filtroMax){
-                        if(filtrointB == -1){ //Si no hay filtro interes
-                          printf("%s ", usuarios[i].nombre);
-                        }else if(filtrointB == 0){ //Si hay filtro interes
-                            int tam = sizeof(usuarios[i].intereses) / sizeof(usuarios[i].intereses[0]);
-                            for(int j = 0; j < tam; ++j){
-                                if(strcasecmp(filtrointA, usuarios[i].intereses[j]) == 0){
-                                    printf("%s ", usuarios[i].nombre);
-                                    j = tam-1;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        //idealmente añadir los nombres a un arreglo de strings lo que no me acuerdo como se hacia ahora mismo
-
+    }while(1);
         
-        for (int i = 0; i < cantidadUsuarios; ++i) {
-            //hacer que busque caminos entre los usuarios y que vea cuando no existe caminos entre los grupos
-            for(int j = 0; j < cantidadUsuarios; ++j){
-                for(int k = 0; k< cantidadUsuarios; ++k){
-                    strcasecmp(usuarios[i].nombre, usuarios[j].amigos[k]);
-                }
-            }
+
+    // Liberar la memoria asignada
+    for (int i = 0; i < cantidadUsuarios; ++i) {
+        for (int j = 0; j < usuarios[i].numAmigos; ++j) {
+            free(usuarios[i].amigos[j]);
         }
-*/
-
-        // Liberar la memoria asignada
-        for (int i = 0; i < cantidadUsuarios; ++i) {
-            for (int j = 0; j < usuarios[i].numAmigos; ++j) {
-                free(usuarios[i].amigos[j]);
-            }
-            free(usuarios[i].amigos);
-        }
-
-        // Liberar la memoria asignada
-        for (int i = 0; i < cantidadUsuarios; ++i) {
-            for (int j = 0; j < usuarios[i].numIntereses; ++j) {
-                free(usuarios[i].intereses[j]);
-            }
-            free(usuarios[i].intereses);
-        }
-        free(usuarios);
-
-        fclose(archivo);
-
-        return 0;
+        free(usuarios[i].amigos);
     }
+
+    // Liberar la memoria asignada
+    for (int i = 0; i < cantidadUsuarios; ++i) {
+        for (int j = 0; j < usuarios[i].numIntereses; ++j) {
+            free(usuarios[i].intereses[j]);
+        }
+        free(usuarios[i].intereses);
+    }
+    free(usuarios);
+
+    return 0;
+}
