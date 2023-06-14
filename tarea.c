@@ -19,6 +19,41 @@
         int* aristas;
     } Usuario;
 
+    void BFS(int cantidadUsuarios, Usuario* usuarios, int origen) {
+    // Crear una cola para almacenar los índices de los usuarios
+    int* cola = malloc(sizeof(int) * cantidadUsuarios);
+    int frente = 0;
+    int final = 0;
+
+    // Marcar el origen como visitado y establecer su distancia como 0
+    usuarios[origen].visitado = true;
+    usuarios[origen].distancia = 0;
+    cola[final++] = origen;
+
+    // Realizar la búsqueda por amplitud
+    while (frente != final) {
+        int actual = cola[frente++];
+        Usuario usuarioActual = usuarios[actual];
+
+        // Recorrer las aristas del usuario actual
+        for (int i = 0; i < usuarioActual.numAristas; ++i) {
+            int vecino = usuarioActual.aristas[i];
+
+            // Si el vecino no ha sido visitado, marcarlo como visitado
+            // y establecer su distancia y padre correspondientes
+            if (!usuarios[vecino].visitado) {
+                usuarios[vecino].visitado = true;
+                usuarios[vecino].distancia = usuarioActual.distancia + 1;
+                usuarios[vecino].padre = actual;
+                cola[final++] = vecino;
+            }
+        }
+    }
+
+    // Liberar la memoria de la cola
+    free(cola);
+}
+
     void encontrarAristas(int cantidadUsuarios, Usuario* usuarios){
         for (int i = 0; i < cantidadUsuarios; ++i)
         {
@@ -49,11 +84,14 @@
                 }
             }
         }
-    }
-    
-    void DFS(){
 
+        for (int i = 0; i < cantidadUsuarios; ++i) {
+            if (!usuarios[i].visitado) {
+                BFS(cantidadUsuarios, usuarios, i);
+            }
+        }
     }
+
 
     int main(int argc, char const* argv[]) {
         int cantidadUsuarios;
@@ -87,7 +125,7 @@
 
         // Creación de usuarios en memoria dinámica
         Usuario* usuarios = malloc(sizeof(Usuario) * cantidadUsuarios);
-        
+       /* 
         while (filtropaisB < -1 || 0 < filtropaisB) {
             printf("Ingrese el pais (-1 si no importa): ");
             scanf("%s", filtropais);
@@ -123,7 +161,7 @@
         
         printf("Parametros: %d %d %d %d \n", filtropaisB, filtroMin, filtroMax, filtrointB);
         printf("Parametros: %s   %s \n", filtropais, filtrointA);
-
+*/
         for (int i = 0; i < cantidadUsuarios; ++i) {
             fscanf(archivo, "%s\n", usuarios[i].nombre);
             fscanf(archivo, "%s\n", usuarios[i].pais);
@@ -155,6 +193,12 @@
 
         encontrarAristas(cantidadUsuarios, usuarios);
         
+
+
+        for (int i = 0; i < cantidadUsuarios; ++i)
+        {
+            printf("distancia %s %d\n",usuarios[i].nombre, usuarios[i].distancia);
+        }
 
         // Prints de prueba
         printf("Cantidad de usuarios: %d\n", cantidadUsuarios);
